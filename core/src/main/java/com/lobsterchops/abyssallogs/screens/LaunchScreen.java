@@ -20,9 +20,9 @@ public class LaunchScreen implements Screen {
     private BitmapFont font;
     private GlyphLayout layout;
 
-    private float autoTransitionTimer; 
+    private float autoTransitionTimer;
     private static final float AUTO_TRANSITION_DURATION = 1.0f; // ⬅ only wait 1 second
-    
+
     private String productionText = "A LobsterChops Production";
 
     Texture launchScreenTexture;
@@ -44,11 +44,12 @@ public class LaunchScreen implements Screen {
         int screenHeight = Gdx.graphics.getHeight();
         viewport = new FitViewport(screenWidth, screenHeight);
 
-        launchScreenTexture = new Texture("background.png"); 
+        launchScreenTexture = new Texture("background.png");
     }
 
     @Override
     public void render(float delta) {
+        handleInput();
     	 update(delta);
     	 draw();
     }
@@ -61,21 +62,22 @@ public class LaunchScreen implements Screen {
             Gdx.app.exit();
         }
     }
-    
+
     private void update(float delta) {
-    	autoTransitionTimer += delta;
+        autoTransitionTimer += delta;
         if (autoTransitionTimer >= AUTO_TRANSITION_DURATION) {
-            screenManager.setScreen(new MainMenuScreen(screenManager));
+            screenManager.setScreen(new MainMenuScreen(screenManager), ScreenManager.TransitionType.FADE, 0.0f); // Instant transition
         }
         handleInput();
     }
+
 
     private void draw() {
     	ScreenUtils.clear(Color.BLACK);
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
-        
+
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
         batch.draw(launchScreenTexture, 0, 0, worldWidth, worldHeight);
@@ -83,7 +85,7 @@ public class LaunchScreen implements Screen {
         float textX = (worldWidth - layout.width) / 2;
         float textY = (worldHeight + layout.height) / 2;
         font.draw(batch, productionText, textX, textY);
-        
+
         batch.end();
     }
 

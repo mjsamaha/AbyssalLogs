@@ -1,5 +1,6 @@
 package com.lobsterchops.abyssallogs.screens;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -16,16 +17,15 @@ public class MainMenuScreen implements Screen {
     private FitViewport viewport;
     private BitmapFont font;
     private GlyphLayout layout;
-    
-    private String productionText = "A LobsterChops Production";
+
     private String promptText = "Press ENTER to Play";
-    
+
     public MainMenuScreen(ScreenManager screenManager) {
         this.screenManager = screenManager;
         this.batch = new SpriteBatch();
         this.font = new BitmapFont();
         this.layout = new GlyphLayout();
-        
+
         // Configure font
         font.getData().setScale(2.0f);
         font.setColor(Color.WHITE);
@@ -41,23 +41,33 @@ public class MainMenuScreen implements Screen {
     @Override
     public void render(float delta) {
         // Clear screen to black as requested
+        handleInput();
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();
-        
+
         // Draw the prompt text centered on screen
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
-        
+
         layout.setText(font, promptText);
         float textX = (worldWidth - layout.width) / 2;
         float textY = (worldHeight + layout.height) / 2; // Center vertically
-        
+
         font.draw(batch, promptText, textX, textY);
-        
+
         batch.end();
+    }
+
+    private void handleInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            screenManager.setScreen(new MainMenuScreen(screenManager));
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.exit();
+        }
     }
 
     @Override
