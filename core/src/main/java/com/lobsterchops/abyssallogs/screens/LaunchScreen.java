@@ -21,7 +21,7 @@ public class LaunchScreen implements Screen {
     private GlyphLayout layout;
 
     private float autoTransitionTimer;
-    private static final float AUTO_TRANSITION_DURATION = 1.0f; // ⬅ only wait 1 second
+    private static final float AUTO_TRANSITION_DURATION = 2.0f; // ⬅ only wait 1 second
 
     private String productionText = "A LobsterChops Production";
 

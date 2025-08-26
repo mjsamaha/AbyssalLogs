@@ -28,7 +28,7 @@ public class Lwjgl3Launcher {
         configuration.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate + 1);
         
         // Start in fullscreen mode
-        configuration.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
+        // configuration.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
         
         // Enable window resizing (this will allow Alt+Enter or programmatic switching to windowed mode)
         configuration.setResizable(true);
