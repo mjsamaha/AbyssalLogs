@@ -17,8 +17,9 @@ public class MainMenuScreen implements Screen {
     private BitmapFont font;
     private GlyphLayout layout;
     
+    private String productionText = "A LobsterChops Production";
     private String promptText = "Press ENTER to Play";
-
+    
     public MainMenuScreen(ScreenManager screenManager) {
         this.screenManager = screenManager;
         this.batch = new SpriteBatch();
