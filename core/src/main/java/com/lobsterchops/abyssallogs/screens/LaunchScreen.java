@@ -20,8 +20,10 @@ public class LaunchScreen implements Screen {
     private BitmapFont font;
     private GlyphLayout layout;
 
-    private float autoTransitionTimer; // Timer for automatic transition
-    private static final float AUTO_TRANSITION_DURATION = 3.0f; // 3 seconds to allow viewing
+    private float autoTransitionTimer; 
+    private static final float AUTO_TRANSITION_DURATION = 1.0f; // ⬅ only wait 1 second
+    
+    private String productionText = "A LobsterChops Production";
 
     Texture launchScreenTexture;
 
@@ -30,9 +32,9 @@ public class LaunchScreen implements Screen {
         this.batch = new SpriteBatch();
         this.font = new BitmapFont();
         this.layout = new GlyphLayout();
-        this.autoTransitionTimer = 0f; // Initialize timer
+        this.autoTransitionTimer = 0f;
 
-        font.getData().setScale(2.0f);
+        font.getData().setScale(2.5f);
         font.setColor(Color.WHITE);
     }
 
@@ -40,36 +42,33 @@ public class LaunchScreen implements Screen {
     public void show() {
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
-
         viewport = new FitViewport(screenWidth, screenHeight);
 
-        launchScreenTexture = new Texture("background.png"); // TODO: create dark blue launch menu bg texture
+        launchScreenTexture = new Texture("background.png"); 
     }
 
     @Override
     public void render(float delta) {
-        handleInput();
-        
-        // IMPORTANT: Update the timer with delta time!
         autoTransitionTimer += delta;
 
-        // Auto-transition to MainMenuScreen after 3 seconds with long fade
+        draw();
+
+        // Transition after ~1 second
         if (autoTransitionTimer >= AUTO_TRANSITION_DURATION) {
             screenManager.setScreen(
                 new MainMenuScreen(screenManager),
                 ScreenManager.TransitionType.FADE,
-                2.0f // 2 second fade duration
+                0.7f // ⬅ quick fade (not longer than wait)
             );
         }
 
-        draw();
+        handleInput();
     }
 
     private void handleInput() {
-        // Keep manual input handling for immediate transition if desired
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             screenManager.setScreen(
-                new MainMenuScreen(screenManager), // Changed to MainMenuScreen
+                new MainMenuScreen(screenManager),
                 ScreenManager.TransitionType.SLIDE_LEFT,
                 0.7f
             );
@@ -92,16 +91,17 @@ public class LaunchScreen implements Screen {
 
         batch.draw(launchScreenTexture, 0, 0, worldWidth, worldHeight);
 
-        // bg first
-        // credits/developer
-        // blinking prompt; to menu screen
+        layout.setText(font, productionText);
+        float textX = (worldWidth - layout.width) / 2;
+        float textY = (worldHeight + layout.height) / 2;
+        font.draw(batch, productionText, textX, textY);
 
         batch.end();
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height, true); // without true, centerCamera!
+        viewport.update(width, height, true);
     }
 
     @Override
@@ -115,8 +115,7 @@ public class LaunchScreen implements Screen {
 
     @Override
     public void dispose() {
-        if (launchScreenTexture != null) {
-            launchScreenTexture.dispose();
-        }
+        if (launchScreenTexture != null) launchScreenTexture.dispose();
+        if (font != null) font.dispose();
     }
 }

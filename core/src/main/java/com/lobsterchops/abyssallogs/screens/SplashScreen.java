@@ -30,23 +30,22 @@ public class SplashScreen implements Screen {
     
     @Override
     public void render(float delta) {
-        timer += delta;
-        
-        // Clear screen to black
+    	timer += delta;
+
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
-        
+
         batch.begin();
-        // Just render black screen - no additional drawing needed
+        // black screen only
         batch.end();
-        
-        // After 2 seconds, transition to LaunchScreen with longer fade
+
+        // After SPLASH_DURATION, go to LaunchScreen
         if (timer >= SPLASH_DURATION) {
             screenManager.setScreen(
-                new LaunchScreen(screenManager), 
-                ScreenManager.TransitionType.FADE, 
-                1.5f  // 1.5 second fade duration
+                new LaunchScreen(screenManager),
+                ScreenManager.TransitionType.FADE,
+                1.0f // fade duration
             );
         }
     }
