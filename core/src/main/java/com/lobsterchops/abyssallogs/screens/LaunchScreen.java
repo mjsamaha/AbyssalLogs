@@ -49,53 +49,41 @@ public class LaunchScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        autoTransitionTimer += delta;
-
-        draw();
-
-        // Transition after ~1 second
-        if (autoTransitionTimer >= AUTO_TRANSITION_DURATION) {
-            screenManager.setScreen(
-                new MainMenuScreen(screenManager),
-                ScreenManager.TransitionType.FADE,
-                0.7f // ⬅ quick fade (not longer than wait)
-            );
-        }
-
-        handleInput();
+    	 update(delta);
+    	 draw();
     }
 
     private void handleInput() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            screenManager.setScreen(
-                new MainMenuScreen(screenManager),
-                ScreenManager.TransitionType.SLIDE_LEFT,
-                0.7f
-            );
+    	if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            screenManager.setScreen(new MainMenuScreen(screenManager));
         }
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
     }
+    
+    private void update(float delta) {
+    	autoTransitionTimer += delta;
+        if (autoTransitionTimer >= AUTO_TRANSITION_DURATION) {
+            screenManager.setScreen(new MainMenuScreen(screenManager));
+        }
+        handleInput();
+    }
 
     private void draw() {
-        ScreenUtils.clear(Color.BLACK);
+    	ScreenUtils.clear(Color.BLACK);
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
-
         batch.begin();
-
+        
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
-
         batch.draw(launchScreenTexture, 0, 0, worldWidth, worldHeight);
-
         layout.setText(font, productionText);
         float textX = (worldWidth - layout.width) / 2;
         float textY = (worldHeight + layout.height) / 2;
         font.draw(batch, productionText, textX, textY);
-
+        
         batch.end();
     }
 

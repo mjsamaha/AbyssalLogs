@@ -42,11 +42,7 @@ public class SplashScreen implements Screen {
 
         // After SPLASH_DURATION, go to LaunchScreen
         if (timer >= SPLASH_DURATION) {
-            screenManager.setScreen(
-                new LaunchScreen(screenManager),
-                ScreenManager.TransitionType.FADE,
-                1.0f // fade duration
-            );
+            screenManager.setScreen(new LaunchScreen(screenManager));
         }
     }
     
