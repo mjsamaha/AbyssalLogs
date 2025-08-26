@@ -13,117 +13,110 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class LaunchScreen implements Screen {
-	
-	private FitViewport viewport;
-	
-	private ScreenManager screenManager;
-	private SpriteBatch batch;
-	private BitmapFont font;
-	private GlyphLayout layout;
-    private float blinkTimer;
-    private boolean showText;
-    
+
+    private FitViewport viewport;
+    private ScreenManager screenManager;
+    private SpriteBatch batch;
+    private BitmapFont font;
+    private GlyphLayout layout;
+
+    private float autoTransitionTimer; // Timer for automatic transition
+    private static final float AUTO_TRANSITION_DURATION = 3.0f; // 3 seconds to allow viewing
+
     Texture launchScreenTexture;
-    
-    Music launchMenuMusic;
-    
+
     public LaunchScreen(ScreenManager screenManager) {
-    	this.screenManager = screenManager;
-    	this.batch = new SpriteBatch();
-    	this.font = new BitmapFont();
-    	this.layout = new GlyphLayout();
-    	this.blinkTimer = 0f;
-    	this.showText = true;
-    	
-    	font.getData().setScale(2.0f);
-    	font.setColor(Color.WHITE);
+        this.screenManager = screenManager;
+        this.batch = new SpriteBatch();
+        this.font = new BitmapFont();
+        this.layout = new GlyphLayout();
+        this.autoTransitionTimer = 0f; // Initialize timer
+
+        font.getData().setScale(2.0f);
+        font.setColor(Color.WHITE);
     }
-	
 
-	@Override
-	public void show() {
-		
-		int screenWidth = Gdx.graphics.getWidth();
-		int screenHeight = Gdx.graphics.getHeight();
-		
-		viewport = new FitViewport(screenWidth, screenHeight);
-		
-		launchScreenTexture = new Texture(""); // TODO: create dark blue launch menu bg texture
-		
-	}
+    @Override
+    public void show() {
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
 
-	@Override
-	public void render(float delta) {
-		handleInput();
-		
-		blinkTimer += delta;
-		if (blinkTimer >= 0.8f) {
-			showText = !showText;
-			blinkTimer = 0f;
-		}
-		
-		draw();
-		
-		
-		
-	}
-	
-	private void handleInput() {
-		if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-			screenManager.setScreen(
-					new GameScreen(screenManager),
-					ScreenManager.TransitionType.SLIDE_LEFT, 0.7f
-			);
-		}
-		
-		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        viewport = new FitViewport(screenWidth, screenHeight);
+
+        launchScreenTexture = new Texture("background.png"); // TODO: create dark blue launch menu bg texture
+    }
+
+    @Override
+    public void render(float delta) {
+        handleInput();
+        
+        // IMPORTANT: Update the timer with delta time!
+        autoTransitionTimer += delta;
+
+        // Auto-transition to MainMenuScreen after 3 seconds with long fade
+        if (autoTransitionTimer >= AUTO_TRANSITION_DURATION) {
+            screenManager.setScreen(
+                new MainMenuScreen(screenManager),
+                ScreenManager.TransitionType.FADE,
+                2.0f // 2 second fade duration
+            );
+        }
+
+        draw();
+    }
+
+    private void handleInput() {
+        // Keep manual input handling for immediate transition if desired
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            screenManager.setScreen(
+                new MainMenuScreen(screenManager), // Changed to MainMenuScreen
+                ScreenManager.TransitionType.SLIDE_LEFT,
+                0.7f
+            );
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
-        } 
-	}
-	
-	private void draw() {
-		ScreenUtils.clear(Color.BLACK);
-		viewport.apply();
-		batch.setProjectionMatrix(viewport.getCamera().combined);
-		
-		batch.begin();
-		
-		float worldWidth = viewport.getWorldWidth();
-		float worldHeight = viewport.getWorldHeight();
-		
-		// bg first
-		
-		// credits/developer
-		
-		// blinking prompt; to menu screen
-		
-		
-		batch.end();
-	}
+        }
+    }
 
-	@Override
-	public void resize(int width, int height) {
-		viewport.update(width, height, true); // without true, centerCamera!
-	}
+    private void draw() {
+        ScreenUtils.clear(Color.BLACK);
+        viewport.apply();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
 
-	@Override
-	public void pause() {
-		
-	}
+        batch.begin();
 
-	@Override
-	public void resume() {
-		
-	}
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
 
-	@Override
-	public void hide() {
-		
-	}
+        batch.draw(launchScreenTexture, 0, 0, worldWidth, worldHeight);
 
-	@Override
-	public void dispose() {
-		
-	}
+        // bg first
+        // credits/developer
+        // blinking prompt; to menu screen
 
+        batch.end();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height, true); // without true, centerCamera!
+    }
+
+    @Override
+    public void pause() {}
+
+    @Override
+    public void resume() {}
+
+    @Override
+    public void hide() {}
+
+    @Override
+    public void dispose() {
+        if (launchScreenTexture != null) {
+            launchScreenTexture.dispose();
+        }
+    }
 }
