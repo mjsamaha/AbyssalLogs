@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,6 +20,8 @@ public class MainMenuScreen implements Screen {
     private GlyphLayout layout;
 
     private String promptText = "Press ENTER to Play";
+    
+    Texture mainMenuScreenTexture;
 
     public MainMenuScreen(ScreenManager screenManager) {
         this.screenManager = screenManager;
@@ -36,7 +39,11 @@ public class MainMenuScreen implements Screen {
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
         viewport = new FitViewport(screenWidth, screenHeight);
+        
+        mainMenuScreenTexture = new Texture("background.png");
     }
+    
+    
 
     @Override
     public void render(float delta) {
@@ -47,10 +54,13 @@ public class MainMenuScreen implements Screen {
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();
+       
 
         // Draw the prompt text centered on screen
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
+        
+        batch.draw(mainMenuScreenTexture, 0, 0, worldWidth, worldHeight);
 
         layout.setText(font, promptText);
         float textX = (worldWidth - layout.width) / 2;
@@ -87,11 +97,15 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
         if (batch != null) {
-            batch.dispose();
+        	batch.dispose();
         }
         if (font != null) {
-            font.dispose();
+        	font.dispose();
         }
+        if (mainMenuScreenTexture != null) {
+        	mainMenuScreenTexture.dispose();
+        }
+        
     }
 
 }
